@@ -6,7 +6,7 @@ Questo progetto utilizza **D3.js** per visualizzare una zanzara che si muove su 
 
 - Il dataset è un file JSON contenente **10 data-case**.
 - Ogni data-case ha due variabili quantitative positive (coordinate `x` e `y`).
-- Viene disegnata una piccola zanzara (una silhouette semplice) nella posizione corrispondente alle coordinate `x` e `y` del **primo data-case**.
+- Viene utilizzata un'immagine SVG scaricata dal sito: [https://www.svgrepo.com] per ricreare la siluette di una piccola zanzara, posizionata nella posizione corrispondente alle coordinate `x` e `y` del **primo data-case**.
 - Facendo **click sullo sfondo**, la zanzara si sposta animatamente alla posizione del **data-case successivo**.  
   Dopo l’ultimo data-case, ricomincia dal primo.
 - Facendo **click con il tasto sinistro del mouse sulla zanzara**, questa si sposta indietro al data-case precedente, sempre con animazione fluida.
