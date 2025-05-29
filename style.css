@@ -1,0 +1,17 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background: url('sfondo.png') center center no-repeat;
+    background-size: cover;  /* o "contain" se vuoi che non venga mai tagliata */
+    background-color: #87ceeb; /* colore fallback azzurro */
+}
+
+svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-color: transparent;  /* l'SVG non copre lo sfondo */
+}

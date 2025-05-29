@@ -1,11 +1,13 @@
-// Dimensioni dell'SVG
-const width = 800;
-const height = 600;
+// Dimensioni schermo intero
+const width = window.innerWidth;
+const height = window.innerHeight;
 
-// Riferimento all'SVG
-const svg = d3.select("#zanzara-svg");
+// Seleziona e adatta l'SVG all'intera finestra
+const svg = d3.select("#zanzara-svg")
+  .attr("width", width)
+  .attr("height", height);
 
-// Variabile per tenere traccia della posizione corrente
+// Variabile per tracciare l'indice della zanzara
 let currentIndex = 0;
 let dataPoints = [];
 
@@ -13,68 +15,58 @@ let dataPoints = [];
 d3.json("data.json").then(data => {
   dataPoints = data;
 
-  // Estrai i range dei valori x e y nel dataset 
-  const xExtent = d3.extent(data, d => d.x); // [min, max]
+  // Calcola estensione valori, valore min e max per le due coordinate
+  const xExtent = d3.extent(data, d => d.x);
   const yExtent = d3.extent(data, d => d.y);
 
-  // Crea le scale, ovvero per mappare i dati in coordinate SVG
-  // Le scale sono lineari, quindi mappano i valori in un range
-  // di coordinate SVG. Le scale sono definite in modo che i valori
-  // minimi e massimi siano mappati correttamente all'interno
-  // dell'area SVG.
+  // Scala i dati alle dimensioni dello schermo
   const xScale = d3.scaleLinear()
     .domain(xExtent)
-    .range([50, width - 50]); // Padding laterale
+    .range([50, width - 50]);
 
   const yScale = d3.scaleLinear()
     .domain(yExtent)
-    .range([height - 50, 50]); // Invertito: y cresce verso il basso
+    .range([height - 50, 50]);
 
-  // Crea la zanzara con un immagine SVG
- const mosquito = svg.append("image")
-  .attr("href", "mosquito.svg")
-  .attr("width", 40)
-  .attr("height", 40)
-  .attr("x", xScale(data[0].x) - 20)
-  .attr("y", yScale(data[0].y) - 20)
-  .style("cursor", "pointer");
+  // Gruppo trasformabile per la zanzara, per ruotare l'immagine e scalare
+  const mosquitoGroup = svg.append("g")
+    .attr("transform", `translate(${xScale(data[0].x)}, ${yScale(data[0].y)})`);
 
-  // Prossimo passo: aggiungere interazione
- // Funzione per aggiornare la posizione della zanzara con animazione
+  // Aggiunge l'immagine zanzara centrata nel gruppo
+  const mosquito = mosquitoGroup.append("image")
+    .attr("href", "mosquito.svg")
+    .attr("width", 40)
+    .attr("height", 40)
+    .attr("x", -20)
+    .attr("y", -20)
+    .style("cursor", "pointer"); //cambia il cursore così si capisce che la zanzara è cliccabile
+
+  // Funzione di movimento con specchiamento
   function moveTo(index) {
-    mosquito.transition()
-      .duration(600)
-      .attr("x", xScale(dataPoints[index].x) -20)
-      .attr("y", yScale(dataPoints[index].y) -20);
+    const prevX = xScale(dataPoints[currentIndex].x);
+    const newX = xScale(dataPoints[index].x);
+    const newY = yScale(dataPoints[index].y);
+
+    const goingRight = newX > prevX; //controlla se la zanzara va verso destra
+    const scaleX = goingRight ? -1 : 1; //se sì l'immagine è specchiata, altrimenti no
+
+    mosquitoGroup.transition()
+      .duration(1500)
+      .attr("transform", `translate(${newX}, ${newY}) scale(${scaleX}, 1)`);
+
+    currentIndex = index;
   }
 
-  // CLICK SULLO SFONDO → avanti
-  svg.on("click", function(event) {
-    // Se il click è stato sulla zanzara, ignora
-    if (d3.pointer(event, this)) {
-      const [mx, my] = d3.pointer(event);
-      const zx = parseFloat(mosquito.attr("cx"));
-      const zy = parseFloat(mosquito.attr("cy"));
-      const distance = Math.hypot(mx - zx, my - zy);
-      if (distance < 10) return; // click troppo vicino alla zanzara
-    }
-
-    currentIndex = (currentIndex + 1) % dataPoints.length;
-    moveTo(currentIndex);
+  // Click sullo sfondo → avanti
+  svg.on("click", function () {
+    const nextIndex = (currentIndex + 1) % dataPoints.length;
+    moveTo(nextIndex);
   });
 
-  // CLICK SULLA ZANZARA → indietro
-  mosquito.on("click", function(event) {
-    event.stopPropagation(); // evita che il click raggiunga lo sfondo
-    currentIndex = (currentIndex - 1 + dataPoints.length) % dataPoints.length;
-    moveTo(currentIndex);
+  // Click sulla zanzara → indietro
+  mosquito.on("click", function (event) {
+    event.stopPropagation();
+    const prevIndex = (currentIndex - 1 + dataPoints.length) % dataPoints.length;
+    moveTo(prevIndex);
   });
 });
-
-/* { "x": 90, "y": 70 },
-    { "x": 15, "y": 95 },
-    { "x": 75, "y": 10 },
-    { "x": 40, "y": 60 },
-    { "x": 8, "y": 25 },
-    { "x": 19, "y": 88 },
-    { "x": 60, "y": 33 }*/
