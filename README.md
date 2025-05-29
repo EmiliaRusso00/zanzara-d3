@@ -21,4 +21,4 @@ Questo progetto utilizza **D3.js** per visualizzare una zanzara che si muove su 
 ## Tecnologie utilizzate
 
 - [D3.js](https://d3js.org) per la visualizzazione e l’animazione.
-- HTML e SVG per la grafica.
+- HTML, CSS e SVG per la grafica.
