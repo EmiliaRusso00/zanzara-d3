@@ -5,13 +5,13 @@ html, body {
     height: 100vh;
     overflow: hidden;
     background: url('sfondo.png') center center no-repeat;
-    background-size: cover;  /* o "contain" se vuoi che non venga mai tagliata */
-    background-color: #87ceeb; /* colore fallback azzurro */
+    background-size: cover;  
+    background-color: #87ceeb; 
 }
 
 svg {
     width: 100%;
     height: 100%;
     display: block;
-    background-color: transparent;  /* l'SVG non copre lo sfondo */
+    background-color: transparent; 
 }
