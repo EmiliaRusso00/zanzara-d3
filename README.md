@@ -1,4 +1,4 @@
-# Progetto Zanzara D3.js
+# Progetto Zanzara D3.js 🦟
 
 Questo progetto utilizza **D3.js** per visualizzare una zanzara che si muove su uno spazio bidimensionale in base a un dataset multivariato.
 
